@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'node:lts-alpine'
-            args '-p 3000:3000'
+            image 'node:18-alpine'
+            args '-u root'
         }
     }
     stages {
@@ -11,15 +11,17 @@ pipeline {
                 sh 'npm install'
             }
         }
+
         stage('Test') {
             steps {
-                sh './jenkins/scripts/test.sh'
+                sh 'CI=true npm test'
             }
         }
+
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
+                input message: 'Finished using the web site? Click "Proceed" to continue'
                 sh './jenkins/scripts/kill.sh'
             }
         }
