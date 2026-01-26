@@ -1,9 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('Build') { 
+        stage('Build') {
             steps {
-                sh 'npm install' 
+                script {
+                    docker.image('node:lts-alpine').inside {
+                        sh 'npm install'
+                    }
+                }
             }
         }
     }
